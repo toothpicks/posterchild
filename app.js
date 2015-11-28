@@ -1,7 +1,7 @@
 
 var fs = require('fs');
 var ini = require('ini');
-var cons = require('consolidate');
+var comprise = require('comprise');
 var express = require('express');
 
 var cfg = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
@@ -10,7 +10,11 @@ var app = new express();
 // use static files.
 app.use(express.static('webroot'));
 
-app.engine('html', cons.hogan);
+app.engine('html', comprise.express({
+    engine: 'handlebars',
+    layout: 'default',
+    extension: 'html'
+}));
 
 app.set('view engine', cfg.templates.view_engine);
 app.set('views', cfg.templates.view_base_path);
@@ -21,7 +25,7 @@ app.get('/', function (req,res) {
 
 app.get('/test', function(req, res)
 {
-    res.render('test/test', {
+    res.render('blog/post.html', {
         title: 'hello.'
     });
 });
